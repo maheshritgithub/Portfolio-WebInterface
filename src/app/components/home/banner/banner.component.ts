@@ -2,8 +2,9 @@ import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angula
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { LoadingService } from 'src/app/services/loading/loading.service';
 import { Subscription } from 'rxjs';
+import { UserDataService, UserData } from 'src/app/services/user-data.service';
+import { ActivatedRoute } from '@angular/router';
 
-// Configuración centralizada de animaciones
 interface AnimationConfig {
   delay: number;
   duration?: number;
@@ -19,7 +20,8 @@ interface AnimationConfig {
 })
 export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  // Configuración fácil de modificar
+  userData: UserData | null = null;
+
   private readonly animationTimings = {
     pretitle: 100,
     name: 800,
@@ -41,13 +43,19 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public analyticsService: AnalyticsService,
     private elementRef: ElementRef,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private userDataService: UserDataService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    // Suscribirse a cuando las animaciones deben comenzar
+    this.route.params.subscribe(params => {
+      const username = params['username']; 
+      this.fetchUserData(username);
+    });
+
     this.loadingSubscription = this.loadingService.animationsStarted$.subscribe((shouldStart) => {
-      if (shouldStart && !this.animationsStarted) {
+      if (shouldStart && !this.animationsStarted && this.userData) {
         this.animationsStarted = true;
         this.initAnimations();
         this.showVideo();
@@ -57,8 +65,7 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initVideoPlayback();
-    // Check if animations should already be started
-    if (this.loadingService.animationsStarted && !this.animationsStarted) {
+    if (this.loadingService.animationsStarted && !this.animationsStarted && this.userData) {
       this.animationsStarted = true;
       this.initAnimations();
       this.showVideo();
@@ -72,10 +79,25 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  private fetchUserData(username : string): void {
+    this.userDataService.getUserDataByUsername(username).subscribe(
+      (data) => {
+        this.userData = data;
+        if (this.loadingService.animationsStarted && !this.animationsStarted) {
+          this.animationsStarted = true;
+          this.initAnimations();
+          this.showVideo();
+        }
+      },
+      (error) => {
+        console.error('Error fetching user data:', error);
+      }
+    );
+  }
+
   private initAnimations(): void {
     const banner = this.elementRef.nativeElement;
 
-    // Configuración de animaciones secuenciales
     const animations: AnimationConfig[] = [
       {
         delay: this.animationTimings.pretitle,
@@ -127,9 +149,9 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private animateTypewriter(banner: HTMLElement): void {
     const nameElement = banner.querySelector('.banner-name') as HTMLElement;
-    if (!nameElement) return;
+    if (!nameElement || !this.userData) return;
 
-    const originalText = nameElement.textContent || '';
+    const originalText = this.userData.fullName;
     nameElement.innerHTML = `<span class="typed-text"></span><span class="cursor">|</span>`;
 
     const typedTextElement = nameElement.querySelector('.typed-text') as HTMLElement;
@@ -184,13 +206,11 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
     const description = banner.querySelector('.banner-description') as HTMLElement;
     if (!description) return;
 
-    // Forzar el estado inicial limpio
     description.style.setProperty('opacity', '0', 'important');
     description.style.setProperty('transform', 'translateY(20px)', 'important');
     description.style.setProperty('filter', 'blur(3px)', 'important');
     description.style.setProperty('transition', 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
 
-    // Trigger reveal elegante
     requestAnimationFrame(() => {
       description.style.setProperty('opacity', '1', 'important');
       description.style.setProperty('transform', 'translateY(0)', 'important');
@@ -211,7 +231,6 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.animationTimeouts = [];
   }
 
-  // Métodos públicos para facilitar la configuración externa
   public updateAnimationTiming(element: keyof typeof this.animationTimings, delay: number): void {
     (this.animationTimings as any)[element] = delay;
   }
@@ -226,12 +245,10 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private showVideo(): void {
     if (this.videoElement) {
-      // Mostrar video y comenzar reproducción cuando se inician las animaciones
       this.videoElement.classList.add('loaded');
       this.startVideoPlayback();
     }
     
-    // Mostrar overlay con la misma animación que el video
     const overlay = this.elementRef.nativeElement.querySelector('.banner-overlay') as HTMLElement;
     if (overlay) {
       overlay.classList.add('loaded');
@@ -241,18 +258,13 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
   private startVideoPlayback(): void {
     if (!this.videoElement) return;
 
-    // Asegurar que el video esté silenciado
     this.videoElement.muted = true;
     this.videoElement.volume = 0;
-
-    // Cargar el video completo ahora que el splash screen se ha ocultado
     this.videoElement.preload = 'auto';
     this.videoElement.load();
 
-    // Agregar listener para errores de carga específicos para GitHub Pages
     this.videoElement.addEventListener('error', (e) => {
       console.warn('Error loading video:', e);
-      // Fallback: reintentar con un delay
       setTimeout(() => {
         if (this.videoElement && this.videoElement.error) {
           this.videoElement.load();
@@ -260,9 +272,8 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
       }, 1000);
     });
 
-    // Intentar reproducir el video cuando esté listo
     const playWhenReady = () => {
-      if (this.videoElement!.readyState >= 3) { // HAVE_FUTURE_DATA
+      if (this.videoElement!.readyState >= 3) {
         this.videoElement!.play().catch(error => {
           console.warn('Error al reproducir video:', error);
           this.setupUserInteractionPlayback(this.videoElement!);
@@ -280,25 +291,18 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
     playWhenReady();
   }
 
-  // Método para configurar el video sin reproducir automáticamente
   private initVideoPlayback(): void {
     const video = this.elementRef.nativeElement.querySelector('.banner-video') as HTMLVideoElement;
 
     if (!video) return;
 
     this.videoElement = video;
-
-    // Asegurar que el video esté completamente silenciado
     video.muted = true;
     video.volume = 0;
-
-    // Configurar el video para carga lazy hasta que termine el splash screen
     video.preload = 'none';
     
     console.log('Video configurado para carga diferida');
   }
-
-
 
   private setupUserInteractionPlayback(video: HTMLVideoElement): void {
     const playOnInteraction = () => {
@@ -311,7 +315,6 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     };
 
-    // Agregar listeners para diferentes tipos de interacción
     const events = ['click', 'touchstart', 'keydown', 'scroll'];
 
     events.forEach(eventType => {

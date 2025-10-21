@@ -1,4 +1,4 @@
-<section class="section banner">
+<section class="section banner" *ngIf="userData">
     <!-- Video de fondo -->
     <video
         muted
@@ -20,20 +20,20 @@
         <div class="section-box-banner">
             <div class="content">
                 <div class="banner-pretitle">
-                    <h1>{{"Banner.Pretitle" | translate}}</h1>
+                    <h1>{{ "Banner.Pretitle" | translate }}</h1>
                 </div>
                 <div class='banner-title'>
-                    <h2 class="banner-name">José Hernández.</h2>
-                    <h3 class="banner-subtitle">Software Developer</h3>
+                    <h2 class="banner-name">{{ userData.fullName }}</h2>
+                    <h3 class="banner-subtitle">{{ userData.subject }}</h3>
                 </div>
                 <div class='banner-description'>
-                    <p [innerHTML]='"Banner.Description" | translate' class="mt-4"></p>
+                    <p [innerHTML]="userData.message" class="mt-4"></p>
                 </div>
             </div>
             <div class="div-btn-banner">
                 <app-dynamic-button
                     [text]='"Banner.ActionBtn" | translate'
-                    href="mailto:andresjosehr@gmail.com"
+                    [href]="'mailto:' + userData.email"
                     target="_blank"
                     analyticsEvent="click_send_mail"
                     analyticsCategory="banner"
@@ -43,6 +43,4 @@
             </div>
         </div>
     </div>
-
-
 </section>
