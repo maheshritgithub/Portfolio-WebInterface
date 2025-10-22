@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UntypedFormControl } from '@angular/forms';
 import { LanguageService } from 'src/app/services/language/language.service';
 import { ThisReceiver } from '@angular/compiler';
-
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-header',
@@ -39,21 +39,40 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
-    public languageService: LanguageService
+    public languageService: LanguageService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
 
   }
 
-  scroll(el) {
-    if(document.getElementById(el)) {
-      document.getElementById(el).scrollIntoView({behavior: 'smooth'});
-    } else{
-      this.router.navigate(['/home']).then(()=> document.getElementById(el).scrollIntoView({behavior: 'smooth'}) );
-    }
-    this.responsiveMenuVisible=false;
+  scroll(el: string) {
+  let username = this.route.snapshot.firstChild?.paramMap.get('username');
+  console.log('HeaderComponent detected username:', username);
+
+  if (el === 'about') {
+    // If username is not found in the route, default to 'mahesh'
+    this.router.navigate([`/${username}/about`]);
+  } 
+  else if (el === 'jobs') {
+    this.router.navigate([`/${username}/experience`]);
   }
+  else if (el === 'proyects') {
+    this.router.navigate([`/${username}/project`]);
+  } 
+  else if (document.getElementById(el)) {
+    document.getElementById(el)?.scrollIntoView({ behavior: 'smooth' });
+  } 
+  else {
+    this.router.navigate(['/home']).then(() => {
+      setTimeout(() => document.getElementById(el)?.scrollIntoView({ behavior: 'smooth' }), 0);
+    });
+  }
+
+  this.responsiveMenuVisible = false;
+}
+
 
   downloadCV(){
     this.languageService.translateService.get("Header.cvName").subscribe(val => {

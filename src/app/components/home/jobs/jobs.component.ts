@@ -1,6 +1,10 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { AnimationsService } from 'src/app/services/animations/animations.service';
+import { UserDataService } from 'src/app/services/user-data.service';
+import { ExperienceService, Experience } from 'src/app/services/experience.service';
+import { switchMap } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-jobs',
@@ -10,25 +14,53 @@ import { AnimationsService } from 'src/app/services/animations/animations.servic
 })
 export class JobsComponent implements OnInit, AfterViewInit {
 
-  active = 0
+  active = 0;
+  experiences: Experience[] = [];
+  isLoading: boolean = true;
 
   constructor(
     public analyticsService: AnalyticsService,
     private animationsService: AnimationsService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private experienceService: ExperienceService,
+    private userDataService: UserDataService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    this.loadExperiences();
   }
 
   ngAfterViewInit(): void {
-    this.initAnimations();
+  }
+
+  private loadExperiences(): void {
+    this.isLoading = true;
+    const username = this.route.snapshot.paramMap.get('username');
+    this.userDataService.getUserDataByUsername(username).pipe(
+      switchMap(user => {
+        if (user && user.id) {
+          return this.experienceService.getExperienceByUserId(user.id);
+        } else {
+          return []; 
+        }
+      })
+    ).subscribe({
+      next: (experiences) => {
+        this.experiences = experiences;
+        this.isLoading = false;
+        setTimeout(() => this.initAnimations(), 0);
+      },
+      error: (error) => {
+        console.error('Error loading experiences:', error);
+        this.isLoading = false;
+      }
+    });
   }
 
   private initAnimations(): void {
     const jobsSection = this.elementRef.nativeElement;
 
-    // Animar título
     const title = jobsSection.querySelector('.about-title');
     if (title) {
       this.animationsService.observeElement(title, {
@@ -59,7 +91,6 @@ export class JobsComponent implements OnInit, AfterViewInit {
       this.animationsService.addHoverEffects(tab, ['lift']);
     });
 
-    // Animar contenido de trabajos (con delay para que aparezcan después de hacer click)
     setTimeout(() => {
       const jobDescriptions = jobsSection.querySelectorAll('.job-description');
       jobDescriptions.forEach((desc: HTMLElement, index: number) => {

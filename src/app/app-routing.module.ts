@@ -2,22 +2,29 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { ArchiveComponent } from './components/archive/archive.component';
+import { AboutComponent } from './components/home/about/about.component';
+import { JobsComponent } from './components/home/jobs/jobs.component';
+import { ProyectsComponent } from './components/home/proyects/proyects.component';
+
 const routes: Routes = [
 
-  {path: '', redirectTo: 'mahesh', pathMatch: 'full'},
-  {path: ':username', component: HomeComponent},
+  {path: '', component: HomeComponent, pathMatch: 'full'},
   {path: 'proyectos',   component: ArchiveComponent},
+  {path: ':username/about', component: AboutComponent},
+  {path: ':username/experience', component: JobsComponent},
+  {path: ':username/project', component: ProyectsComponent},
+  {path: ':username', component: HomeComponent},
   
   // {path: 'profile'        ,   component: ProfileComponent         , canActivate: [AuthGuard]},
   // {path: 'users'          ,   component: UsersComponent           , canActivate: [AuthGuard]},
   // {path: 'register-user'  ,   component: RegisterUserComponent    , canActivate: [AuthGuard]},
 
-  {path: '**', pathMatch: 'full', redirectTo: 'mahesh'},
+  {path: '**', pathMatch: 'full', redirectTo: ''},
 
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
