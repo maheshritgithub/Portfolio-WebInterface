@@ -7,7 +7,14 @@
           {{ "Experience.Title" | translate }}
         </h3>
       </div>
-      <div class="jobs-tabs" data-animate="fadeInUp" data-animate-duration="1200" data-animate-delay="300">
+
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && experiences.length > 0" class="jobs-tabs" data-animate="fadeInUp" data-animate-duration="1200" data-animate-delay="300">
         <ul
           ngbNav
           #nav="ngbNav"
@@ -16,35 +23,38 @@
           class="nav-tabs jobs-tabs"
         >
           <li
-            *ngFor="let job of 'Experience.Jobs' | translate; let i = index"
-            [title]="job.Tab"
+            *ngFor="let experience of experiences; let i = index"
+            [title]="experience.companyName"
             [ngbNavItem]="i"
             data-animate="scaleIn"
             [attr.data-animate-delay]="600 + (i * 150)"
           >
-            <a ngbNavLink>{{ job.Tab }}</a>
+            <a ngbNavLink>{{ experience.companyName }}</a>
             <ng-template ngbNavContent>
               <h4 class="title-tab-content">
-                {{ job.Title }} |
-                <span class="company-tab-content">{{ job.Tab }}</span>
+                {{ experience.role }} |
+                <span class="company-tab-content">{{ experience.companyName }}</span>
               </h4>
-              <h5 class="job-time">{{ job.Date }}</h5>
-              <!-- {{job.Description | json}} -->
+              <h5 class="job-time">{{ experience.startDate | date: 'MMM yyyy' }} - {{ experience.endDate ? (experience.endDate | date: 'MMM yyyy') : 'Present' }}</h5>
               <p
                 *ngFor="
-                  let jobDescriptionParagraph of job.Description;
-                  let i = index
+                  let descriptionPoint of experience.responsibilities;
+                  let j = index
                 "
                 class="job-description"
-                [innerHTML]="jobDescriptionParagraph | translate"
+                [innerHTML]="descriptionPoint"
                 data-animate="fadeInLeft"
-                [attr.data-animate-delay]="i * 200"
+                [attr.data-animate-delay]="j * 200"
               ></p>
               <span></span>
             </ng-template>
           </li>
         </ul>
         <div [ngbNavOutlet]="nav" class="mt-2"></div>
+      </div>
+
+      <div *ngIf="!isLoading && experiences.length === 0" class="text-center text-light">
+        <p>No experience data available at the moment.</p>
       </div>
     </div>
   </div>

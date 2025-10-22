@@ -7,7 +7,6 @@ import { AboutComponent } from './about/about.component';
 import { BannerComponent } from './banner/banner.component';
 import { ContactComponent } from './contact/contact.component';
 import { JobsComponent } from './jobs/jobs.component';
-import { MoreProyectsComponent } from './more-proyects/more-proyects.component';
 import { ProyectsComponent } from './proyects/proyects.component';
 import { NgbModule, NgbNav, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { CarouselModule } from 'ngx-owl-carousel-o';
@@ -27,7 +26,6 @@ export function HttpLoaderFactory(http: HttpClient){
     AboutComponent,
     JobsComponent,
     ProyectsComponent,
-    MoreProyectsComponent,
     ContactComponent,
   ],
   imports: [

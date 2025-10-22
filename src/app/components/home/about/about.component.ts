@@ -1,61 +1,140 @@
-import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Subject, of } from 'rxjs';
+import { switchMap, takeUntil, catchError } from 'rxjs/operators';
+
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { AnimationsService } from 'src/app/services/animations/animations.service';
+import { UserDataService } from 'src/app/services/user-data.service';
+import { UserDetailsService, UserDetails } from 'src/app/services/user-details.service';
 
 @Component({
-    selector: 'app-about',
-    templateUrl: './about.component.html',
-    styleUrls: ['./about.component.scss'],
-    animations: [
-        trigger('fadeInOut', [
-            transition(':enter', [
-                style({ opacity: 0 }),
-                animate('300ms ease-in', style({ opacity: 1 }))
-            ]),
-            transition(':leave', [
-                animate('300ms ease-out', style({ opacity: 0 }))
-            ])
-        ]),
-        trigger('zoomIn', [
-            transition(':enter', [
-                style({ transform: 'scale(0.3)', opacity: 0 }),
-                animate('400ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'scale(1)', opacity: 1 }))
-            ])
-        ])
-    ],
-    standalone: false
+  selector: 'app-about',
+  templateUrl: './about.component.html',
+  styleUrls: ['./about.component.scss'],
+  standalone: false,
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-out', style({ opacity: 0 }))
+      ])
+    ]),
+    trigger('zoomIn', [
+      transition(':enter', [
+        style({ transform: 'scale(0.3)', opacity: 0 }),
+        animate('400ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'scale(1)', opacity: 1 }))
+      ])
+    ])
+  ]
 })
-export class AboutComponent implements OnInit, AfterViewInit {
+export class AboutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isImageModalOpen = false;
+  aboutParagraphs: string[] = [];
+  skills: string[] = [];
+  profileImageUrl: SafeUrl | null = null;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     public analyticsService: AnalyticsService,
     private animationsService: AnimationsService,
-    private elementRef: ElementRef
-  ) { }
+    private elementRef: ElementRef,
+    private userDetailsService: UserDetailsService,
+    private userDataService: UserDataService,
+    private sanitizer: DomSanitizer,
+    private route: ActivatedRoute
+    
+  ) { 
+      console.log('AboutComponent constructor called');
+  }
 
   ngOnInit(): void {
+    console.log('AboutComponent ngOnInit called');
+    this.loadUserDetails();
+    console.log('AboutComponent Initialised');
+  }
+
+private async loadUserDetails(): Promise<void> {
+  try {
+    console.log('Starting to load user details...');
+
+    // Get the username from route
+    const username = this.route.snapshot.paramMap.get('username');
+    console.log(`Username from route: ${username}`);
+
+    if (!username) {
+      console.warn('No username found in route.');
+      return;
+    }
+
+    // First API call to get user data
+    const userData = await this.userDataService.getUserDataByUsername(username).toPromise();
+    console.log('Received user data:', userData);
+
+    if (!userData?.id) {
+      console.warn('No userId found for this username.');
+      return;
+    }
+
+    // Second API call to get detailed user info
+    const details = await this.userDetailsService.getUserDetails(userData.id).toPromise();
+    console.log('Received final details:', details);
+
+    if (details) {
+      this.populateDetails(details);
+      console.log('Component populated with details.');
+    } else {
+      console.log('No details to populate.');
+    }
+
+  } catch (err) {
+    console.error('Error loading user details:', err);
+  }
+}
+
+  
+
+  private populateDetails(details: UserDetails): void {
+    this.aboutParagraphs = details.about
+      ? details.about.split('\n').filter(p => p.trim() !== '')
+      : [];
+    this.skills = details.skillSet || [];
+
+    if (details.profileImage) {
+      const imageUrl = `data:image/png;base64,${details.profileImage}`;
+      this.profileImageUrl = this.sanitizer.bypassSecurityTrustUrl(imageUrl);
+    }
   }
 
   ngAfterViewInit(): void {
     this.initAnimations();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onImageClick(): void {
-    this.analyticsService.sendAnalyticEvent("click_image", "about", "image");
+    this.analyticsService.sendAnalyticEvent('click_image', 'about', 'image');
     this.openImageModal();
   }
 
   openImageModal(): void {
     this.isImageModalOpen = true;
-    document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
   }
 
   closeImageModal(): void {
     this.isImageModalOpen = false;
-    document.body.style.overflow = 'auto'; // Restaurar scroll del body
+    document.body.style.overflow = 'auto';
   }
 
   onModalBackdropClick(event: Event): void {
@@ -73,54 +152,22 @@ export class AboutComponent implements OnInit, AfterViewInit {
   private initAnimations(): void {
     const aboutSection = this.elementRef.nativeElement;
 
-    // Animar título
     const title = aboutSection.querySelector('.about-title');
-    if (title) {
-      this.animationsService.observeElement(title, {
-        type: 'slideInUp',
-        duration: 1000
-      });
-    }
+    if (title) this.animationsService.observeElement(title);
 
-    // Animar párrafos con stagger
     const paragraphs = aboutSection.querySelectorAll('.about-description p');
-    paragraphs.forEach((p: HTMLElement, index: number) => {
-      this.animationsService.observeElement(p, {
-        type: 'fadeInLeft',
-        duration: 800,
-        delay: 200 + (index * 300)
-      });
-    });
+    paragraphs.forEach((p: HTMLElement) => this.animationsService.observeElement(p));
 
-    // Animar lista de skills
     const skillsList = aboutSection.querySelector('.skills-list');
-    if (skillsList) {
-      this.animationsService.observeElement(skillsList as HTMLElement, {
-        type: 'fadeInUp',
-        delay: 800
-      });
-    }
+    if (skillsList) this.animationsService.observeElement(skillsList as HTMLElement);
 
-    // Animar skills individuales con stagger
     const skills = aboutSection.querySelectorAll('.skill-element');
-    skills.forEach((skill: HTMLElement, index: number) => {
-      this.animationsService.observeElement(skill, {
-        type: 'scaleIn',
-        delay: 1000 + (index * 100)
-      });
-
-      // Añadir efectos hover
+    skills.forEach((skill: HTMLElement) => {
+      this.animationsService.observeElement(skill);
       this.animationsService.addHoverEffects(skill, ['lift', 'glow']);
     });
 
-    // Animar imagen
-    const imageContainer = aboutSection.querySelector('.about-img-container');
-    if (imageContainer) {
-      this.animationsService.observeElement(imageContainer as HTMLElement, {
-        type: 'morphIn',
-        duration: 1200,
-        delay: 600
-      });
-    }
+    const imageContainer = aboutSection.querySelector('[data-animate="morphIn"]');
+    if (imageContainer) this.animationsService.observeElement(imageContainer as HTMLElement);
   }
 }
