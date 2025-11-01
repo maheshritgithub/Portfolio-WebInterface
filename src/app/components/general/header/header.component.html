@@ -1,7 +1,6 @@
 <nav [@animateMenu] class="navbar main-navbar on-top" [class.nav-shadow]='this.pageYPosition>0'>
     <div class="container">
-        <a class="navbar-brand text-light" [routerLink]="'inicio'">
-            <img src='assets/images/logo.png' width='25' />
+        <a class="navbar-brand text-light">
         </a>
         <ul ngbNav #nav="ngbNav" class="menu-ul">
             <li ngbNavItem (click)='analyticsService.sendAnalyticEvent("click_about", "menu", "click")'>
@@ -22,13 +21,14 @@
             </li>
             <li ngbNavItem>
                 <app-dynamic-button
-                  [text]="'Header.cvBtn' | translate"
-                  (buttonClick)="downloadCV(); $event.stopPropagation(); $event.preventDefault()"
-                  variant="primary"
-                  size="small"
-                  analyticsEvent="click_cv"
-                  analyticsCategory="menu"
-                  analyticsLabel="cv_download">
+                [@.disabled]="true"
+                [text]="'Header.cvBtn' | translate"
+                (buttonClick)="downloadCV(); $event.stopPropagation(); $event.preventDefault()"
+                variant="primary"
+                size="small"
+                analyticsEvent="click_cv"
+                analyticsCategory="menu"
+                analyticsLabel="cv_download">
                 </app-dynamic-button>
             </li>
         </ul>
@@ -58,17 +58,6 @@
                             <a (click)='scroll("contact")'>
                                 <span>04. </span> {{"Header.Item4" | translate}}
                             </a>
-                        </li>
-                        <li>
-                            <app-dynamic-button
-                              [text]="'Header.cvBtn' | translate"
-                              (buttonClick)="downloadCV(); $event.stopPropagation(); $event.preventDefault()"
-                              variant="primary"
-                              size="small"
-                              analyticsEvent="click_cv"
-                              analyticsCategory="menu"
-                              analyticsLabel="cv_download">
-                            </app-dynamic-button>
                         </li>
                     </ol>
                 </nav>
