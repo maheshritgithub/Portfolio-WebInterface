@@ -16,10 +16,23 @@ export interface UserData {
 })
 export class UserDataService {
   private apiUrl = 'http://localhost:5218/api/Users';
+  private resumeApiUrl = 'http://localhost:5218/api/Resume';
 
   constructor(private http: HttpClient) { }
 
   getUserDataByUsername(username: string): Observable<UserData> {
     return this.http.get<UserData>(`${this.apiUrl}/by-username/${username}`);
   }
+
+  /**
+   * Downloads a user's resume by their unique user ID.
+   * @param userId The GUID of the user.
+   * @returns An Observable of Blob containing the resume file.
+   */
+downloadResume(userId: string): Observable<Blob> {
+  return this.http.get(`http://localhost:5218/api/Resume/${userId}`, {
+    responseType: 'blob'
+  });
+}
+
 }

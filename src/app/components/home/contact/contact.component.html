@@ -1,3 +1,4 @@
+
 <section class="section" id="contact">
   <div class="container contact">
     <div class="section-box">
@@ -22,7 +23,7 @@
            data-animate-delay="3500">
         <app-dynamic-button
           [text]='"Contact.Btn" | translate'
-          href="mailto:andresjosehr@gmail.com"
+          [href]="'mailto:' + (userEmail)"
           target="_blank"
           analyticsEvent="click_send_mail"
           analyticsCategory="contact"

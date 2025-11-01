@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild, HostListener, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {trigger, style, query, transition, stagger, animate } from '@angular/animations'
+import { trigger, style, query, transition, stagger, animate } from '@angular/animations'
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
-import { TranslateService } from '@ngx-translate/core';
 import { UntypedFormControl } from '@angular/forms';
 import { LanguageService } from 'src/app/services/language/language.service';
-import { ThisReceiver } from '@angular/compiler';
 import { ActivatedRoute } from '@angular/router';
+import { UserDataService } from 'src/app/services/user-data.service';
 
 @Component({
     selector: 'app-header',
@@ -27,72 +26,128 @@ import { ActivatedRoute } from '@angular/router';
     standalone: false
 })
 
-
-
 export class HeaderComponent implements OnInit {
 
   responsiveMenuVisible: Boolean = false;
   pageYPosition: number;
-  languageFormControl: UntypedFormControl= new UntypedFormControl();
-  cvName: string = "";
+  languageFormControl: UntypedFormControl = new UntypedFormControl();
+  userId: string = "";
+  userFullName: string = "";
+  username: string = "";
 
   constructor(
     private router: Router,
     public analyticsService: AnalyticsService,
     public languageService: LanguageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private userDataService: UserDataService
   ) { }
-
   ngOnInit(): void {
+    this.loadUserResume();
+  }
 
+  async loadUserResume() {
+    try {
+      this.username = this.route.snapshot.firstChild?.paramMap.get('username');
+      
+      if (!this.username) {
+        console.error('Username not found in route');
+        return;
+      }
+
+      // First API call to get user data
+      const userData = await this.userDataService.getUserDataByUsername(this.username).toPromise();
+
+      // Store the user ID and full name for later use
+      if (userData && userData.id) {
+        this.userId = userData.id;
+        this.userFullName = userData.fullName || this.username;
+      }
+    } catch (error) {
+      console.error('Error loading user resume:', error);
+    }
   }
 
   scroll(el: string) {
-  let username = this.route.snapshot.firstChild?.paramMap.get('username');
-  console.log('HeaderComponent detected username:', username);
+    let username = this.route.snapshot.firstChild?.paramMap.get('username');
+    console.log('HeaderComponent detected username:', username);
 
-  if (el === 'about') {
-    // If username is not found in the route, default to 'mahesh'
-    this.router.navigate([`/${username}/about`]);
-  } 
-  else if (el === 'jobs') {
-    this.router.navigate([`/${username}/experience`]);
+    if (el === 'about') {
+      this.router.navigate([`/${username}/about`]);
+    } 
+    else if (el === 'jobs') {
+      this.router.navigate([`/${username}/experience`]);
+    }
+    else if (el === 'proyects') {
+      this.router.navigate([`/${username}/project`]);
+    }
+    else if (el === 'contact') {
+      this.router.navigate([`/${username}/contact`]);
+    } 
+    else if (document.getElementById(el)) {
+      document.getElementById(el)?.scrollIntoView({ behavior: 'smooth' });
+    } 
+    else {
+      this.router.navigate(['/home']).then(() => {
+        setTimeout(() => document.getElementById(el)?.scrollIntoView({ behavior: 'smooth' }), 0);
+      });
+    }
+
+    this.responsiveMenuVisible = false;
   }
-  else if (el === 'proyects') {
-    this.router.navigate([`/${username}/project`]);
-  } 
-  else if (document.getElementById(el)) {
-    document.getElementById(el)?.scrollIntoView({ behavior: 'smooth' });
-  } 
-  else {
-    this.router.navigate(['/home']).then(() => {
-      setTimeout(() => document.getElementById(el)?.scrollIntoView({ behavior: 'smooth' }), 0);
+
+async downloadCV(): Promise<void> {
+  try {
+    let username = this.route.snapshot.firstChild?.paramMap.get('username')
+                || this.route.snapshot.paramMap.get('username');
+
+    if (!username) {
+      console.error('Username not found in route');
+      return;
+    }
+
+    // Step 2: Fetch user data from API before downloading
+    const userData = await this.userDataService.getUserDataByUsername(username).toPromise();
+
+    if (!userData || !userData.id) {
+      console.error('Invalid user data received:', userData);
+      return;
+    }
+
+    // Step 3: Assign for reference
+    this.userId = userData.id;
+    this.userFullName = userData.fullName || username;
+
+    // Step 4: Call the resume download API
+    this.userDataService.downloadResume(this.userId).subscribe({
+      next: (blob) => {
+        const fileName = `${this.userFullName || 'resume'}.pdf`;
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Error downloading resume:', error);
+      }
     });
-  }
 
-  this.responsiveMenuVisible = false;
+  } catch (error) {
+    console.error('Error during resume download:', error);
+  }
 }
 
 
-  downloadCV(){
-    this.languageService.translateService.get("Header.cvName").subscribe(val => {
-      this.cvName = val
-      console.log(val)
-      // app url
-      let url = window.location.href;
-
-      // Open a new window with the CV
-      window.open(url + "/../assets/cv/" + this.cvName, "_blank");
-    })
-
+  @HostListener('window:scroll', ['getScrollPosition($event)'])
+  getScrollPosition(event) {
+    this.pageYPosition = window.pageYOffset;
   }
 
-  @HostListener('window:scroll', ['getScrollPosition($event)'])
-    getScrollPosition(event) {
-        this.pageYPosition=window.pageYOffset
-    }
-
-    changeLanguage(language: string) {
-      this.languageFormControl.setValue(language);
-    }
+  changeLanguage(language: string) {
+    this.languageFormControl.setValue(language);
+  }
 }
