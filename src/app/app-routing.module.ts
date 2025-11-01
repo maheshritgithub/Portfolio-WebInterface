@@ -1,17 +1,14 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
-import { ArchiveComponent } from './components/archive/archive.component';
 import { AboutComponent } from './components/home/about/about.component';
 import { JobsComponent } from './components/home/jobs/jobs.component';
 import { ProyectsComponent } from './components/home/proyects/proyects.component';
-import { HeaderComponent } from './components/general/header/header.component';
 import { ContactComponent } from './components/home/contact/contact.component';
 
 const routes: Routes = [
 
   {path: '', component: HomeComponent, pathMatch: 'full'},
-  {path: 'proyectos',   component: ArchiveComponent},
   {path: ':username/about', component: AboutComponent},
   {path: ':username/experience', component: JobsComponent},
   {path: ':username/project', component: ProyectsComponent},
