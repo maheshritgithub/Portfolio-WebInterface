@@ -5,6 +5,8 @@ import { ArchiveComponent } from './components/archive/archive.component';
 import { AboutComponent } from './components/home/about/about.component';
 import { JobsComponent } from './components/home/jobs/jobs.component';
 import { ProyectsComponent } from './components/home/proyects/proyects.component';
+import { HeaderComponent } from './components/general/header/header.component';
+import { ContactComponent } from './components/home/contact/contact.component';
 
 const routes: Routes = [
 
@@ -13,6 +15,7 @@ const routes: Routes = [
   {path: ':username/about', component: AboutComponent},
   {path: ':username/experience', component: JobsComponent},
   {path: ':username/project', component: ProyectsComponent},
+  {path: ':username/contact', component: ContactComponent},
   {path: ':username', component: HomeComponent},
   
   // {path: 'profile'        ,   component: ProfileComponent         , canActivate: [AuthGuard]},

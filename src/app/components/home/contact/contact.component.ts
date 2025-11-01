@@ -1,6 +1,9 @@
+
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics/analytics.service';
 import { AnimationsService } from 'src/app/services/animations/animations.service';
+import { ActivatedRoute } from '@angular/router';
+import { UserDataService } from 'src/app/services/user-data.service';
 
 @Component({
     selector: 'app-contact',
@@ -10,13 +13,44 @@ import { AnimationsService } from 'src/app/services/animations/animations.servic
 })
 export class ContactComponent implements OnInit, AfterViewInit {
 
+  userEmail: string = '';
+
   constructor(
     public analyticsService: AnalyticsService,
     private animationsService: AnimationsService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private route: ActivatedRoute,
+    private userDataService: UserDataService,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.loadUserDetails();
+  }
+
+  private async loadUserDetails(): Promise<void> {
+    try {
+      // Get the username from route
+      const username = this.route.snapshot.paramMap.get('username');
+
+      if (!username) {
+        return;
+      }
+
+      // First API call to get user data
+      const userData = await this.userDataService.getUserDataByUsername(username).toPromise();
+
+      console.log('User Data:', userData);
+
+      // Store the email from user data
+      if (userData.email) {
+        this.userEmail = userData.email;
+      }
+
+      console.log('User Email:', this.userEmail);
+      
+
+    } catch (err) {
+    }
   }
 
   ngAfterViewInit(): void {

@@ -23,7 +23,7 @@
             <li ngbNavItem>
                 <app-dynamic-button
                   [text]="'Header.cvBtn' | translate"
-                  (buttonClick)="downloadCV()"
+                  (buttonClick)="downloadCV(); $event.stopPropagation(); $event.preventDefault()"
                   variant="primary"
                   size="small"
                   analyticsEvent="click_cv"
@@ -50,31 +50,26 @@
                             </a>
                         </li>
                         <li (click)='analyticsService.sendAnalyticEvent("click_jobs", "menu", "click")'>
-                          <a (click)='scroll("proyects")'>
-                              <span>03. </span> {{"Header.Item3" | translate}}
-                          </a>
-                      </li>
-                      <li (click)='analyticsService.sendAnalyticEvent("click_contact", "menu", "click")'>
-                        <a (click)='scroll("proyects")'>
-                            <span>04. </span> {{"Header.Item4" | translate}}
-                        </a>
-                      </li>
-                      <li>
-                          <app-dynamic-button
-                            [text]="'Header.cvBtn' | translate"
-                            (buttonClick)="downloadCV()"
-                            variant="primary"
-                            size="small"
-                            analyticsEvent="click_cv"
-                            analyticsCategory="menu"
-                            analyticsLabel="cv_download">
-                          </app-dynamic-button>
-                      </li>
-                        <!-- <li>
-                            <img src="https://www.worldometers.info/img/flags/us-flag.gif" alt="English">
-                        </li> -->
-
-
+                            <a (click)='scroll("proyects")'>
+                                <span>03. </span> {{"Header.Item3" | translate}}
+                            </a>
+                        </li>
+                        <li (click)='analyticsService.sendAnalyticEvent("click_contact", "menu", "click")'>
+                            <a (click)='scroll("contact")'>
+                                <span>04. </span> {{"Header.Item4" | translate}}
+                            </a>
+                        </li>
+                        <li>
+                            <app-dynamic-button
+                              [text]="'Header.cvBtn' | translate"
+                              (buttonClick)="downloadCV(); $event.stopPropagation(); $event.preventDefault()"
+                              variant="primary"
+                              size="small"
+                              analyticsEvent="click_cv"
+                              analyticsCategory="menu"
+                              analyticsLabel="cv_download">
+                            </app-dynamic-button>
+                        </li>
                     </ol>
                 </nav>
             </aside>

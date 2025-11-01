@@ -52,31 +52,25 @@ export class AboutComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute
     
   ) { 
-      console.log('AboutComponent constructor called');
   }
 
   ngOnInit(): void {
-    console.log('AboutComponent ngOnInit called');
     this.loadUserDetails();
-    console.log('AboutComponent Initialised');
   }
 
 private async loadUserDetails(): Promise<void> {
   try {
-    console.log('Starting to load user details...');
 
     // Get the username from route
     const username = this.route.snapshot.paramMap.get('username');
     console.log(`Username from route: ${username}`);
 
     if (!username) {
-      console.warn('No username found in route.');
       return;
     }
 
     // First API call to get user data
     const userData = await this.userDataService.getUserDataByUsername(username).toPromise();
-    console.log('Received user data:', userData);
 
     if (!userData?.id) {
       console.warn('No userId found for this username.');
@@ -85,11 +79,9 @@ private async loadUserDetails(): Promise<void> {
 
     // Second API call to get detailed user info
     const details = await this.userDetailsService.getUserDetails(userData.id).toPromise();
-    console.log('Received final details:', details);
 
     if (details) {
       this.populateDetails(details);
-      console.log('Component populated with details.');
     } else {
       console.log('No details to populate.');
     }
