@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FooterComponent } from './footer/footer.component'
 import { HeaderComponent } from './header/header.component'
 import { DynamicButtonComponent } from './dynamic-button/dynamic-button.component'
 import { SplashScreenComponent } from './splash-screen/splash-screen.component'
@@ -18,7 +17,6 @@ export function HttpLoaderFactory(http: HttpClient){
 @NgModule({
   declarations: [
     HeaderComponent,
-    FooterComponent,
     DynamicButtonComponent,
     SplashScreenComponent
   ],
@@ -37,6 +35,6 @@ export function HttpLoaderFactory(http: HttpClient){
       }
     })
   ],
-  exports: [HeaderComponent, FooterComponent, DynamicButtonComponent, SplashScreenComponent]
+  exports: [HeaderComponent, DynamicButtonComponent, SplashScreenComponent]
 })
 export class GeneralModule { }

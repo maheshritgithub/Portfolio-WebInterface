@@ -196,14 +196,14 @@
     position: fixed;
     width: 100%;
     top: 0;
-    z-index: 100; // Muy por encima de todo para evitar interferencias
+    z-index: 100;
     height: 100px;
     transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
 }
 
 .nav-shadow {
     height: 70px;
-    background: $Navy !important; // Fondo sólido cuando hay scroll
+    background: $Navy !important; 
     box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
     transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
 }
@@ -221,6 +221,10 @@
     nav .nav {
         display: none;
     }
+    
+    .main-navbar .menu-ul {
+        display: none !important;
+    }
 }
 
 @media (min-width: 827px) {
@@ -229,7 +233,6 @@
         display: none;
     }
 }
-
 .flag-text {
     color: inherit;
     margin: 0 10px;
@@ -278,6 +281,7 @@
 //     margin: auto;
 //     margin-top: 21px;
 // }
+
 .arrow-language {
     font-size: 10px;
     height: 10px;
