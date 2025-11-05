@@ -58,19 +58,16 @@ export class ParticlesService {
   init(): void {
     if (this.isInitialized) return;
 
-    console.log('Inicializando partículas globales...');
     this.createCanvas();
     this.initParticles();
     this.startAnimation();
     this.bindResizeEvent();
     this.isInitialized = true;
-    console.log('Partículas inicializadas:', this.particles.length, 'partículas creadas');
   }
 
   destroy(): void {
     if (!this.isInitialized) return;
 
-    console.log('Destruyendo partículas...');
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }

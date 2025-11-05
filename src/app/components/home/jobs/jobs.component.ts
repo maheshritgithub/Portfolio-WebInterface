@@ -52,7 +52,6 @@ export class JobsComponent implements OnInit, AfterViewInit {
         setTimeout(() => this.initAnimations(), 0);
       },
       error: (error) => {
-        console.error('Error loading experiences:', error);
         this.isLoading = false;
       }
     });

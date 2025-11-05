@@ -39,14 +39,12 @@ export class ContactComponent implements OnInit, AfterViewInit {
       // First API call to get user data
       const userData = await this.userDataService.getUserDataByUsername(username).toPromise();
 
-      console.log('User Data:', userData);
 
       // Store the email from user data
       if (userData.email) {
         this.userEmail = userData.email;
       }
 
-      console.log('User Email:', this.userEmail);
       
 
     } catch (err) {

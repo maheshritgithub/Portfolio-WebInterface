@@ -20,6 +20,14 @@ export class UserDataService {
 
   constructor(private http: HttpClient) { }
 
+  /**
+   * Retrieves all users from the system.
+   * @returns An Observable of UserData array containing all users.
+   */
+  getAllUsers(): Observable<UserData[]> {
+    return this.http.get<UserData[]>(this.apiUrl);
+  }
+
   getUserDataByUsername(username: string): Observable<UserData> {
     return this.http.get<UserData>(`${this.apiUrl}/by-username/${username}`);
   }
@@ -29,10 +37,9 @@ export class UserDataService {
    * @param userId The GUID of the user.
    * @returns An Observable of Blob containing the resume file.
    */
-downloadResume(userId: string): Observable<Blob> {
-  return this.http.get(`http://localhost:5218/api/Resume/${userId}`, {
-    responseType: 'blob'
-  });
-}
-
+  downloadResume(userId: string): Observable<Blob> {
+    return this.http.get(`${this.resumeApiUrl}/${userId}`, {
+      responseType: 'blob'
+    });
+  }
 }

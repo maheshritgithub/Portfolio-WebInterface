@@ -9,6 +9,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -18,7 +19,8 @@ export function HttpLoaderFactory(http: HttpClient){
   declarations: [
     HeaderComponent,
     DynamicButtonComponent,
-    SplashScreenComponent
+    SplashScreenComponent,
+    NotFoundComponent  
   ],
   imports: [
     CommonModule,
@@ -35,6 +37,6 @@ export function HttpLoaderFactory(http: HttpClient){
       }
     })
   ],
-  exports: [HeaderComponent, DynamicButtonComponent, SplashScreenComponent]
+  exports: [HeaderComponent, DynamicButtonComponent, SplashScreenComponent, NotFoundComponent]
 })
 export class GeneralModule { }
