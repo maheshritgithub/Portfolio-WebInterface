@@ -63,7 +63,6 @@ private async loadUserDetails(): Promise<void> {
 
     // Get the username from route
     const username = this.route.snapshot.paramMap.get('username');
-    console.log(`Username from route: ${username}`);
 
     if (!username) {
       return;
@@ -73,7 +72,6 @@ private async loadUserDetails(): Promise<void> {
     const userData = await this.userDataService.getUserDataByUsername(username).toPromise();
 
     if (!userData?.id) {
-      console.warn('No userId found for this username.');
       return;
     }
 
@@ -83,11 +81,9 @@ private async loadUserDetails(): Promise<void> {
     if (details) {
       this.populateDetails(details);
     } else {
-      console.log('No details to populate.');
     }
 
   } catch (err) {
-    console.error('Error loading user details:', err);
   }
 }
 

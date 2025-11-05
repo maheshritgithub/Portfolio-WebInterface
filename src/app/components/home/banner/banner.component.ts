@@ -90,7 +90,6 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
       (error) => {
-        console.error('Error fetching user data:', error);
       }
     );
   }
@@ -264,7 +263,6 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.videoElement.load();
 
     this.videoElement.addEventListener('error', (e) => {
-      console.warn('Error loading video:', e);
       setTimeout(() => {
         if (this.videoElement && this.videoElement.error) {
           this.videoElement.load();
@@ -275,13 +273,11 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
     const playWhenReady = () => {
       if (this.videoElement!.readyState >= 3) {
         this.videoElement!.play().catch(error => {
-          console.warn('Error al reproducir video:', error);
           this.setupUserInteractionPlayback(this.videoElement!);
         });
       } else {
         this.videoElement!.addEventListener('canplay', () => {
           this.videoElement!.play().catch(error => {
-            console.warn('Error al reproducir video:', error);
             this.setupUserInteractionPlayback(this.videoElement!);
           });
         }, { once: true });
@@ -301,7 +297,6 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
     video.volume = 0;
     video.preload = 'none';
     
-    console.log('Video configurado para carga diferida');
   }
 
   private setupUserInteractionPlayback(video: HTMLVideoElement): void {
@@ -310,7 +305,6 @@ export class BannerComponent implements OnInit, AfterViewInit, OnDestroy {
         video.muted = true;
         video.volume = 0;
         video.play().catch(error => {
-          console.warn('Error al reproducir video después de interacción:', error);
         });
       }
     };

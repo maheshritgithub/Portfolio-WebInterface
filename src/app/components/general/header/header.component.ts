@@ -51,7 +51,6 @@ export class HeaderComponent implements OnInit {
       this.username = this.route.snapshot.firstChild?.paramMap.get('username');
       
       if (!this.username) {
-        console.error('Username not found in route');
         return;
       }
 
@@ -64,13 +63,11 @@ export class HeaderComponent implements OnInit {
         this.userFullName = userData.fullName || this.username;
       }
     } catch (error) {
-      console.error('Error loading user resume:', error);
     }
   }
 
   scroll(el: string) {
     let username = this.route.snapshot.firstChild?.paramMap.get('username');
-    console.log('HeaderComponent detected username:', username);
 
     if (el === 'about') {
       this.router.navigate([`/${username}/about`]);
@@ -102,7 +99,6 @@ async downloadCV(): Promise<void> {
                 || this.route.snapshot.paramMap.get('username');
 
     if (!username) {
-      console.error('Username not found in route');
       return;
     }
 
@@ -110,7 +106,6 @@ async downloadCV(): Promise<void> {
     const userData = await this.userDataService.getUserDataByUsername(username).toPromise();
 
     if (!userData || !userData.id) {
-      console.error('Invalid user data received:', userData);
       return;
     }
 
@@ -132,12 +127,10 @@ async downloadCV(): Promise<void> {
         window.URL.revokeObjectURL(url);
       },
       error: (error) => {
-        console.error('Error downloading resume:', error);
       }
     });
 
   } catch (error) {
-    console.error('Error during resume download:', error);
   }
 }
 

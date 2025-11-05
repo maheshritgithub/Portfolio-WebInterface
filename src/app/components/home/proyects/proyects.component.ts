@@ -57,7 +57,6 @@ export class ProyectsComponent implements OnInit {
       switchMap(user => this.projectsService.getProjectsByUserId(user.id))
     ).subscribe(projects => {
       this.projects = this.mapProjects(projects);
-      console.log('Mapped projects:', this.projects);
     });
   }
 

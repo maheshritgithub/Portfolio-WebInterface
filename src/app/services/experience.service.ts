@@ -27,7 +27,6 @@ export class ExperienceService {
   getExperienceByUserId(userId: string): Observable<Experience[]> {
     return this.http.get<Experience[]>(`${this.apiUrl}/user/${userId}`).pipe(
       catchError(error => {
-        console.error('Error fetching experience data:', error);
         return of([]);
       })
     );

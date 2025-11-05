@@ -54,10 +54,8 @@ export class SplashScreenComponent implements OnInit, OnDestroy {
       });
 
       this.lottieAnimation.addEventListener('error', (error: any) => {
-        console.warn('Lottie animation error:', error);
       });
     } catch (error) {
-      console.warn('Error initializing Lottie animation:', error);
     }
   }
 
