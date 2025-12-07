@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  trackAnalyticID: "http://localhost:5218/"
+  apiUrl: 'http://localhost:5218/api',
 };
 
 /*

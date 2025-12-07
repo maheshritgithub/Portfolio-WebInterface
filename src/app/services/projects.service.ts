@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export enum ImageType {
     Png,
@@ -29,7 +31,7 @@ export interface Project {
   providedIn: 'root'
 })
 export class ProjectsService {
-  private apiUrl = 'http://localhost:5218/api/Projects';
+  private apiUrl = `${environment.apiUrl}/Projects`;
 
   constructor(private http: HttpClient) { }
 
@@ -39,6 +41,11 @@ export class ProjectsService {
    * @returns An Observable of Project[].
    */
   getProjectsByUserId(userId: string): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.apiUrl}/user/${userId}`);
+    return this.http.get<Project[]>(`${this.apiUrl}/user/${userId}`).pipe(
+      catchError(error => {
+        console.error('Error fetching projects data:', error);
+        return of([]);
+      })
+    );
   }
 }

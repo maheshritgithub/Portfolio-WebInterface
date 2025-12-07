@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  trackAnalyticID: "G-4ML1VNCP9T"
+  apiUrl: 'http://localhost:5218/api',
+  trackAnalyticID: 'G-4ML1VNCP9T'
 };
