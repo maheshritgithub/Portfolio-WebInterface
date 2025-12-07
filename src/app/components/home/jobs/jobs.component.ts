@@ -46,11 +46,16 @@ export class JobsComponent implements OnInit, AfterViewInit {
         }
       })
     ).subscribe({
-      next: (experiences) => {
-        this.experiences = experiences;
-        this.isLoading = false;
-        setTimeout(() => this.initAnimations(), 0);
-      },
+    next: (experiences) => {
+      this.experiences = experiences.map(exp => ({
+        ...exp,
+        projects: exp.projects || [],
+        impact: exp.impact || null
+      }));
+
+      this.isLoading = false;
+      setTimeout(() => this.initAnimations(), 0);
+    },
       error: (error) => {
         this.isLoading = false;
       }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface UserData {
   id: string;
@@ -15,8 +17,8 @@ export interface UserData {
   providedIn: 'root'
 })
 export class UserDataService {
-  private apiUrl = 'http://localhost:5218/api/Users';
-  private resumeApiUrl = 'http://localhost:5218/api/Resume';
+  private apiUrl = `${environment.apiUrl}/Users`;
+  private resumeApiUrl = `${environment.apiUrl}/Resume`;
 
   constructor(private http: HttpClient) { }
 
@@ -25,11 +27,21 @@ export class UserDataService {
    * @returns An Observable of UserData array containing all users.
    */
   getAllUsers(): Observable<UserData[]> {
-    return this.http.get<UserData[]>(this.apiUrl);
+    return this.http.get<UserData[]>(this.apiUrl).pipe(
+      catchError(error => {
+        console.error('Error fetching all users:', error);
+        return of([]);
+      })
+    );
   }
 
   getUserDataByUsername(username: string): Observable<UserData> {
-    return this.http.get<UserData>(`${this.apiUrl}/by-username/${username}`);
+    return this.http.get<UserData>(`${this.apiUrl}/by-username/${username}`).pipe(
+      catchError(error => {
+        console.error('Error fetching user data by username:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   /**
@@ -40,6 +52,11 @@ export class UserDataService {
   downloadResume(userId: string): Observable<Blob> {
     return this.http.get(`${this.resumeApiUrl}/${userId}`, {
       responseType: 'blob'
-    });
+    }).pipe(
+      catchError(error => {
+        console.error('Error downloading resume:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }

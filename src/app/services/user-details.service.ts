@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface UserDetails {
   userId: string;
@@ -13,7 +15,7 @@ export interface UserDetails {
   providedIn: 'root'
 })
 export class UserDetailsService {
-  private apiUrl = 'http://localhost:5218/api/UserDetails';
+  private apiUrl = `${environment.apiUrl}/UserDetails`;
 
   constructor(private http: HttpClient) { }
 
@@ -23,6 +25,11 @@ export class UserDetailsService {
    * @returns An Observable of UserDetails.
    */
   getUserDetails(userId: string): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`${this.apiUrl}/${userId}`);
+    return this.http.get<UserDetails>(`${this.apiUrl}/${userId}`).pipe(
+      catchError(error => {
+        console.error('Error fetching user details:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }
