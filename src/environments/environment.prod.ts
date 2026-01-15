@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5218/api',
+  apiUrl: 'https://portfoliomahesh-cbf9d4aaffgdaahf.canadacentral-01.azurewebsites.net/api',
   trackAnalyticID: 'G-4ML1VNCP9T'
 };
