@@ -36,7 +36,7 @@ export class UserDataService {
   }
 
   getUserDataByUsername(username: string): Observable<UserData> {
-    return this.http.get<UserData>(`${this.apiUrl}/by-username/${environment.userName}`).pipe(
+    return this.http.get<UserData>(`${this.apiUrl}/by-username/${username}`).pipe(
       catchError(error => {
         console.error('Error fetching user data by username:', error);
         return throwError(() => error);
@@ -50,7 +50,7 @@ export class UserDataService {
    * @returns An Observable of Blob containing the resume file.
    */
   downloadResume(userId: string): Observable<Blob> {
-    return this.http.get(`${this.resumeApiUrl}/${environment.userId}`, {
+    return this.http.get(`${this.resumeApiUrl}/${userId}`, {
       responseType: 'blob'
     }).pipe(
       catchError(error => {
