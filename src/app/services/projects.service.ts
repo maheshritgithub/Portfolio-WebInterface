@@ -41,7 +41,7 @@ export class ProjectsService {
    * @returns An Observable of Project[].
    */
   getProjectsByUserId(userId: string): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.apiUrl}/user/${userId}`).pipe(
+    return this.http.get<Project[]>(`${this.apiUrl}/user/${environment.userId}`).pipe(
       catchError(error => {
         console.error('Error fetching projects data:', error);
         return of([]);

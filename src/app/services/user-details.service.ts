@@ -25,7 +25,7 @@ export class UserDetailsService {
    * @returns An Observable of UserDetails.
    */
   getUserDetails(userId: string): Observable<UserDetails> {
-    return this.http.get<UserDetails>(`${this.apiUrl}/${userId}`).pipe(
+    return this.http.get<UserDetails>(`${this.apiUrl}/${environment.userId}`).pipe(
       catchError(error => {
         console.error('Error fetching user details:', error);
         return throwError(() => error);
