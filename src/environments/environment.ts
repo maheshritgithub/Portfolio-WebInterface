@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5218/api',
+  apiUrl: 'https://www.portfoliosite.online/api',
 };
 
 /*
