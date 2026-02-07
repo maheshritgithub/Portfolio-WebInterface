@@ -50,7 +50,7 @@ export class JobsComponent implements OnInit, AfterViewInit {
       this.experiences = experiences.map(exp => ({
         ...exp,
         projects: exp.projects || [],
-        impact: exp.impact || null
+        impact: exp.impact || []
       }));
 
       this.isLoading = false;

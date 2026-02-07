@@ -16,7 +16,13 @@
       </div>
 
       <!-- Experience Tabs -->
-      <div *ngIf="!isLoading && experiences.length > 0" class="jobs-tabs" data-animate="fadeInUp" data-animate-duration="1200" data-animate-delay="300">
+      <div
+        *ngIf="!isLoading && experiences.length > 0"
+        class="jobs-tabs"
+        data-animate="fadeInUp"
+        data-animate-duration="1200"
+        data-animate-delay="300"
+      >
         <ul
           ngbNav
           #nav="ngbNav"
@@ -32,144 +38,85 @@
             [attr.data-animate-delay]="600 + (i * 150)"
           >
             <a ngbNavLink>{{ experience.companyName }}</a>
+
             <ng-template ngbNavContent>
               <!-- Role and Company -->
               <h4 class="title-tab-content">
                 {{ experience.role }} |
                 <span class="company-tab-content">{{ experience.companyName }}</span>
               </h4>
+
               <h5 class="job-time">
-                {{ experience.startDate | date: 'MMM yyyy' }} -
-                {{ experience.endDate ? (experience.endDate | date: 'MMM yyyy') : 'Present' }}
+                {{ experience.startDate | date:'MMM yyyy':'':'en-US' }} -
+                {{ experience.endDate
+                    ? (experience.endDate | date:'MMM yyyy':'':'en-US')
+                    : 'Present' }}
               </h5>
 
               <!-- Responsibilities -->
               <div *ngFor="let descriptionPoint of experience.responsibilities; let j = index">
-                <p class="job-description" [innerHTML]="descriptionPoint" data-animate="fadeInLeft" [attr.data-animate-delay]="j * 200"></p>
+                <p
+                  class="job-description"
+                  [innerHTML]="descriptionPoint"
+                  data-animate="fadeInLeft"
+                  [attr.data-animate-delay]="j * 200"
+                ></p>
               </div>
 
-             <div class="design-option-1">
-  <div *ngIf="experience.projects?.length > 0" class="projects-wrapper">
-    <div class="section-header">
-      <span class="header-icon">🚀</span>
-      <h4 class="section-title">Projects</h4>
-    </div>
-    
-    <div *ngFor="let project of experience.projects; let i = index" class="project-box">
-      <div class="project-number">{{ i + 1 }}</div>
-      
-      <div class="project-content">
-        <h3 class="project-title">{{ project.name }}</h3>
-        <p class="project-desc">{{ project.description }}</p>
-        
-        <div *ngIf="project.technologies?.length" class="tech-tags">
-          <span *ngFor="let tech of project.technologies" class="tech-tag">{{ tech }}</span>
-        </div>
-        
-        <div *ngIf="project.contribution" class="contribution-box">
-          <div class="contribution-header">
-            <span class="contrib-icon">💡</span>
-            <span class="contrib-label">Key Contribution</span>
-          </div>
-          <p class="contrib-text">{{ project.contribution }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
+              <!-- DESIGN OPTION 1 -->
+              <div class="design-option-1">
 
-  <div *ngIf="experience.impact" class="impact-wrapper">
-    <div class="impact-header">
-      <span class="impact-icon">📊</span>
-      <h4 class="impact-title">Impact & Results</h4>
-    </div>
-    <div class="impact-content">
-      <div class="impact-highlight"></div>
-      <p class="impact-text">{{ experience.impact.statement }}</p>
-    </div>
-  </div>
-</div>
+                <!-- Projects -->
+                <div *ngIf="experience.projects?.length > 0" class="projects-wrapper">
+                  <div class="section-header">
+                    <span class="header-icon">🚀</span>
+                    <h4 class="section-title">Projects</h4>
+                  </div>
 
-<!-- Alternative Design Option 2: Timeline Style -->
-<div class="design-option-2" style="display: none;">
-  <div *ngIf="experience.projects?.length > 0" class="timeline-projects">
-    <h4 class="timeline-header">Featured Projects</h4>
-    
-    <div class="timeline-container">
-      <div *ngFor="let project of experience.projects; let last = last" class="timeline-item">
-        <div class="timeline-marker"></div>
-        <div class="timeline-line" *ngIf="!last"></div>
-        
-        <div class="timeline-content">
-          <h3 class="timeline-project-name">{{ project.name }}</h3>
-          <p class="timeline-description">{{ project.description }}</p>
-          
-          <div *ngIf="project.technologies?.length" class="timeline-tech">
-            <span class="tech-label">Stack:</span>
-            <span class="tech-list">{{ project.technologies.join(' • ') }}</span>
-          </div>
-          
-          <div *ngIf="project.contribution" class="timeline-contribution">
-            <span class="contribution-badge">Contribution</span>
-            <p>{{ project.contribution }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+                  <div *ngFor="let project of experience.projects; let pIndex = index" class="project-box">
+                    <div class="project-number">{{ pIndex + 1 }}</div>
 
-  <div *ngIf="experience.impact" class="timeline-impact">
-    <div class="impact-box">
-      <h4>Measurable Impact</h4>
-      <p>{{ experience.impact.statement }}</p>
-    </div>
-  </div>
-</div>
+                    <div class="project-content">
+                      <h3 class="project-title">{{ project.name }}</h3>
+                      <p class="project-desc">{{ project.description }}</p>
 
-<!-- Alternative Design Option 3: Glassmorphism Style -->
-<div class="design-option-3" style="display: none;">
-  <div *ngIf="experience.projects?.length > 0" class="glass-projects">
-    <h4 class="glass-header">
-      <span class="header-line"></span>
-      Projects
-      <span class="header-line"></span>
-    </h4>
-    
-    <div *ngFor="let project of experience.projects" class="glass-card">
-      <div class="glass-shine"></div>
-      
-      <h3 class="glass-project-name">
-        <span class="name-bracket">[</span>
-        {{ project.name }}
-        <span class="name-bracket">]</span>
-      </h3>
-      
-      <p class="glass-description">{{ project.description }}</p>
-      
-      <div *ngIf="project.technologies?.length" class="glass-tech-section">
-        <div class="tech-grid">
-          <div *ngFor="let tech of project.technologies" class="tech-pill">
-            <span class="tech-dot"></span>
-            {{ tech }}
-          </div>
-        </div>
-      </div>
-      
-      <div *ngIf="project.contribution" class="glass-contribution">
-        <div class="contribution-divider"></div>
-        <h5>My Role & Contribution</h5>
-        <p>{{ project.contribution }}</p>
-      </div>
-    </div>
-  </div>
+                      <div *ngIf="project.technologies?.length" class="tech-tags">
+                        <span *ngFor="let tech of project.technologies" class="tech-tag">
+                          {{ tech }}
+                        </span>
+                      </div>
 
-  <div *ngIf="experience.impact" class="glass-impact">
-    <div class="impact-glass-card">
-      <div class="impact-badge">Impact Metrics</div>
-      <p class="impact-value">{{ experience.impact.statement }}</p>
-    </div>
-  </div>
-</div>
+                      <div *ngIf="project.contribution" class="contribution-box">
+                        <div class="contribution-header">
+                          <span class="contrib-icon">💡</span>
+                          <span class="contrib-label">Key Contribution</span>
+                        </div>
+                        <p class="contrib-text">{{ project.contribution }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
+                <!-- Impact (LIST) -->
+                <div *ngIf="experience.impact?.length > 0" class="impact-wrapper">
+                  <div class="impact-header">
+                    <span class="impact-icon">📊</span>
+                    <h4 class="impact-title">Impact & Results</h4>
+                  </div>
+
+                  <ul class="impact-list">
+                    <li
+                      *ngFor="let impactItem of experience.impact; let k = index"
+                      class="impact-text"
+                      data-animate="fadeInUp"
+                      [attr.data-animate-delay]="k * 150"
+                    >
+                      {{ impactItem.statement }}
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
             </ng-template>
           </li>
         </ul>

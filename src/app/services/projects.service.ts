@@ -22,6 +22,7 @@ export interface Project {
     name: string;
     description: string;
     isHighlighted: boolean;
+    displayOrder: number;
     technologies: string; 
     projectUrl?: string | null;
     image: ProjectImage[];

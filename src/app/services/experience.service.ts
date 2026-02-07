@@ -27,7 +27,7 @@ export interface Experience {
   description?: string | null;
   responsibilities: string[];
   projects?: ProjectModel[];
-  impact?: ImpactModel;
+  impact?: ImpactModel[];
 }
 
 @Injectable({

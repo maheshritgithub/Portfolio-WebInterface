@@ -225,3 +225,19 @@
  ::-webkit-scrollbar-thumb:hover {
     background: $Green;
 }
+
+.img-container {
+  width: 600px;       
+  height: 350px;       
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;   
+}
+
+.img-feature-proyect {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  
+  background-color: #0b1a2a; 
+}
