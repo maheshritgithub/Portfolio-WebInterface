@@ -25,7 +25,7 @@
         <div *ngIf="i % 2 === 0" class="img-feature-proyect-container" data-aos="fade-up" data-aos-duration="1000">
           <div class="img-feature-proyect-box">
             <div class="img-container" style="width:auto;">
-              <img class="img-feature-proyect rounded" [src]="project.img" [alt]="project.title" width="600px">
+              <img class="img-feature-proyect rounded" [src]="project.img" [alt]="project.title">
             </div>
           </div>
         </div>
@@ -33,9 +33,6 @@
         <!-- Project info box -->
         <div [class.proyect-info-right]="i%2===0" [class.proyect-info-left]="i%2!==0" class="h-100" [style.background-image]="'url(' + project.img + ')'">
           <div class="proyect-box">
-            <h4 [class.text-right]="i%2===0" [class.text-left]="i%2!==0" class="feature-proyect">
-              {{"FeatureProjects.Label" | translate}}
-            </h4>
             <h5 [class.text-right]="i%2===0" [class.text-left]="i%2!==0" class="proyect-name">
               {{ project.title }}
             </h5>
@@ -73,7 +70,7 @@
         <div *ngIf="i % 2 !== 0" class="img-feature-proyect-container" data-aos="fade-up" data-aos-duration="1000">
           <div class="img-feature-proyect-box">
             <div class="img-container" style="width:auto;">
-              <img class="img-feature-proyect rounded" [src]="project.img" [alt]="project.title" width="600px">
+              <img class="img-feature-proyect rounded" [src]="project.img" [alt]="project.title">
             </div>
           </div>
         </div>

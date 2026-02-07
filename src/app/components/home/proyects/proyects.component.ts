@@ -60,29 +60,35 @@ export class ProyectsComponent implements OnInit {
     });
   }
 
-
-  private mapProjects(projects: Project[]): DisplayProject[] {
+private mapProjects(projects: Project[]): DisplayProject[] {
   return projects
     .filter(p => p.isHighlighted)
+    .sort((a, b) => a.displayOrder - b.displayOrder) 
     .map(project => {
       const imgs: SafeResourceUrl[] = project.image.map(img => {
-        const imageType = img.type === ImageType.Png ? 'png' :
-                          img.type === ImageType.Jpeg ? 'jpeg' : 'svg+xml';
+        const imageType =
+          img.type === ImageType.Png ? 'png' :
+          img.type === ImageType.Jpeg ? 'jpeg' : 'svg+xml';
+
         const imageDataUrl = `data:image/${imageType};base64,${img.data}`;
         return this.sanitizer.bypassSecurityTrustResourceUrl(imageDataUrl);
       });
 
-      const primaryIndex: number = project.image.findIndex(img => img.isPrimary);
-      const safeIndex: number = primaryIndex >= 0 ? primaryIndex : 0;
+      const primaryIndex = project.image.findIndex(img => img.isPrimary);
+      const safeIndex = primaryIndex >= 0 ? primaryIndex : 0;
 
       return {
         title: project.name,
         description: project.description,
-        technologies: project.technologies ? project.technologies.split(',').map(t => t.trim()) : [],
+        technologies: project.technologies
+          ? project.technologies.split(',').map(t => t.trim())
+          : [],
         demoLink: project.projectUrl,
         ghLink: null,
         imgs: imgs,
-        img: imgs.length > 0 ? imgs[safeIndex] : this.sanitizer.bypassSecurityTrustResourceUrl('')
+        img: imgs.length > 0
+          ? imgs[safeIndex]
+          : this.sanitizer.bypassSecurityTrustResourceUrl('')
       };
     });
 }

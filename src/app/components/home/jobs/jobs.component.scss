@@ -731,3 +731,39 @@
     left: -1.1rem;
   }
 }
+
+.impact-list {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.impact-text {
+  white-space: nowrap;       
+  overflow: hidden;           
+  text-overflow: ellipsis;   
+  line-height: 1.6;
+  max-width: 100%;           
+  display: block;
+}
+.impact-wrapper {
+  width: 100%;
+  max-width: 900px; 
+}
+.impact-text {
+  white-space: nowrap;   
+  overflow: visible;      
+  text-overflow: unset;   
+}
+
+.impact-list li {
+  color: #e6f1ff;        
+  font-size: 0.95rem;     
+  line-height: 1.5;       
+}
+
+.impact-list li::before {
+  content: '•';
+  color: #00ffd0;
+  font-size: 1.1rem;
+  margin-right: 0.6rem;
+}
