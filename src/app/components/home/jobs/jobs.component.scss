@@ -10,7 +10,6 @@
 
     ul{
         display: block;
-        width: 114.33px;
         border: none;
     }
 
@@ -116,7 +115,7 @@
 @media (max-width: 768px){
     .jobs {
         .job-description{
-            padding: 0px;
+            padding: 26px;
         }
     }
     ::ng-deep .jobs-tabs{
@@ -135,8 +134,7 @@
 }
 
 .jobs-tabs {
-  display: flex;
-  gap: 10rem; 
+  display: flex; 
 }
 
 .design-option-1 {
@@ -278,64 +276,6 @@
   margin: 0;
 }
 
-.impact-wrapper {
-  margin-top: 2.5rem;
-}
-
-.impact-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.impact-icon {
-  font-size: 1.5rem;
-}
-
-.impact-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #00d4aa;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.impact-content {
-  position: relative;
-  background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 100, 150, 0.1) 100%);
-  border: 2px solid rgba(0, 212, 170, 0.25);
-  border-radius: 12px;
-  padding: 1.5rem;
-  overflow: hidden;
-}
-
-.impact-highlight {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, #00d4aa, #0095a8);
-}
-
-.impact-text {
-  font-size: 1rem;
-  color: #e0e0e0;
-  line-height: 1.7;
-  margin: 0;
-  font-weight: 500;
-  padding-left: 1rem;
-}
-
-/* ========================================
-   DESIGN OPTION 2: Timeline Style
-   ======================================== */
-.timeline-projects {
-  margin-top: 1.5rem;
-}
-
 .timeline-header {
   font-size: 1.4rem;
   font-weight: 700;
@@ -462,47 +402,6 @@
   margin: 0.5rem 0 0 0;
 }
 
-.timeline-impact {
-  margin-top: 2rem;
-  padding-left: 2rem;
-}
-
-.impact-box {
-  background: rgba(0, 212, 170, 0.08);
-  border: 2px solid rgba(0, 212, 170, 0.3);
-  border-radius: 10px;
-  padding: 1.5rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.impact-box::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #00d4aa, #0095a8);
-}
-
-.impact-box h4 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #00d4aa;
-  margin-bottom: 0.75rem;
-}
-
-.impact-box p {
-  font-size: 0.95rem;
-  color: #e0e0e0;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* ========================================
-   DESIGN OPTION 3: Glassmorphism Style
-   ======================================== */
 .glass-projects {
   margin-top: 1.5rem;
 }
@@ -652,55 +551,6 @@
   margin: 0;
 }
 
-.glass-impact {
-  margin-top: 2.5rem;
-}
-
-.impact-glass-card {
-  position: relative;
-  background: rgba(0, 212, 170, 0.1);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(0, 212, 170, 0.3);
-  border-radius: 16px;
-  padding: 2rem;
-  overflow: hidden;
-}
-
-.impact-glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top right, rgba(0, 212, 170, 0.15), transparent);
-  pointer-events: none;
-}
-
-.impact-badge {
-  display: inline-block;
-  padding: 0.5rem 1.25rem;
-  background: rgba(0, 212, 170, 0.2);
-  border: 1px solid #00d4aa;
-  color: #00d4aa;
-  font-size: 0.85rem;
-  font-weight: 700;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 1rem;
-}
-
-.impact-value {
-  font-size: 1rem;
-  color: #fff;
-  line-height: 1.7;
-  margin: 0;
-  font-weight: 500;
-  position: relative;
-  z-index: 1;
-}
-
 @media (max-width: 768px) {
   .project-box {
     flex-direction: column;
@@ -732,38 +582,48 @@
   }
 }
 
-.impact-list {
-  list-style: disc;
-  padding-left: 1.5rem;
+.impact-section {
+  margin-top: 1.5rem;
 }
-
-.impact-text {
-  white-space: nowrap;       
-  overflow: hidden;           
-  text-overflow: ellipsis;   
-  line-height: 1.6;
-  max-width: 100%;           
-  display: block;
-}
-.impact-wrapper {
-  width: 100%;
-  max-width: 900px; 
-}
-.impact-text {
-  white-space: nowrap;   
-  overflow: visible;      
-  text-overflow: unset;   
-}
-
-.impact-list li {
-  color: #e6f1ff;        
-  font-size: 0.95rem;     
-  line-height: 1.5;       
-}
-
-.impact-list li::before {
-  content: '•';
-  color: #00ffd0;
+.impact-title {
   font-size: 1.1rem;
-  margin-right: 0.6rem;
+  font-weight: 600;
+  color: $Green;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+.impact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.impact-list-item {
+  position: relative;
+  padding-left: 26px;
+  margin-bottom: 0.75rem;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: $LightSlate;
+
+  white-space: normal;
+  overflow-wrap: break-word;
+
+  &::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    color: $Green;
+    font-size: 1rem;
+  }
+}
+@media (max-width: 768px) {
+  .impact-list-item {
+    font-size: 0.9rem;
+    padding-left: 22px;
+  }
+}
+.impact-list-item {
+  color: #ffffff;   
 }
