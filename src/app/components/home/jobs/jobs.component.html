@@ -97,19 +97,13 @@
                   </div>
                 </div>
 
-                <!-- Impact (LIST) -->
-                <div *ngIf="experience.impact?.length > 0" class="impact-wrapper">
-                  <div class="impact-header">
-                    <span class="impact-icon">📊</span>
-                    <h4 class="impact-title">Impact & Results</h4>
-                  </div>
+                <div *ngIf="experience.impact?.length > 0" class="impact-section">
+                  <h4 class="company-tab-content impact-title">Impact & Results</h4>
 
                   <ul class="impact-list">
                     <li
-                      *ngFor="let impactItem of experience.impact; let k = index"
-                      class="impact-text"
-                      data-animate="fadeInUp"
-                      [attr.data-animate-delay]="k * 150"
+                      *ngFor="let impactItem of experience.impact"
+                      class="impact-list-item"
                     >
                       {{ impactItem.statement }}
                     </li>
